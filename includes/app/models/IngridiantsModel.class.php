@@ -1,11 +1,15 @@
 <?php
 class IngridiantsError{
    const NO_NAME = 1;
-   const INVALID_NAME = 2;
-   const NO_RECIPE_ID = 3;
-   const INVALID_RECIPE_ID = 4;
-   const NAME_EXISTS = 5;
-   const NO_INGRIDIANTS = 6;
+   const NAME_EXISTS = 2;
+   const INVALID_NAME = 3;
+   
+   const BAD_ID = 10;
+   const NO_RECIPE_ID = 11;
+   const INVALID_RECIPE_ID = 12;
+   
+   const NO_INGRIDIANTS = 100;
+   const MANUFACTOR_EXISTS = 101;
 }
 
 class IngridiantsAction{
@@ -14,6 +18,7 @@ class IngridiantsAction{
     const BY_RECIPE = 3;
     const CREATE_SINGLE = 4;
     const CREATE_MULTIPLE = 5;
+    const ADD_MANUFACTORS = 6;
 }
 
 class IngridiantsModel extends AbstractModel{
@@ -26,6 +31,7 @@ class IngridiantsModel extends AbstractModel{
         , IngridiantsAction::BY_RECIPE => 'retriveByRecipe'
         , IngridiantsAction::CREATE_SINGLE => 'createIngridiant'
         , IngridiantsAction::CREATE_MULTIPLE => 'createIngridiants'
+        , IngridiantsAction::ADD_MANUFACTORS => 'addManufactor'
     );
     
     /**
@@ -137,6 +143,18 @@ class IngridiantsModel extends AbstractModel{
         if ($this->isError()) return;
         
         $this->create($ings);
+    }
+    
+    protected function addManufactor(){
+        $id = $this->getOption('id');
+        $man = $this->getOption('manufactor');
+        
+        if ($this->db->count('ingridiants',array('id'=>$id))==0) $this->setError(IngridiantsError::BAD_ID);
+        if ($this->db->count('ingridiant_manufactors',array('ing_id'=>$id,'name'=>$man))) $this->setError(IngridiantsError::MANUFACTOR_EXISTS);
+        
+        if ($this->isError()) return;
+        
+        $this->insertManufactors($id,array($man));
     }
     
     private function create(array $ings){
