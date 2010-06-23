@@ -22,12 +22,12 @@ class HTMLController{
         $this->setCSS();
         
         $this->setJS();
-        //$user = new User;
+        $user = new User;
         
-        /*if (!$user->isLoggedIn()){
+       if (!$user->isLoggedIn()){
             $handler = new KeyHandler(new MatkonDba);
             $this->view->assign('key_handler',$handler);
-        }*/
+        }
         
         $this->view->assign('css',$this->css);
         $this->view->assign('js',$this->js);
@@ -35,12 +35,24 @@ class HTMLController{
         $this->view->assign('description',$this->desc);
         $this->view->assign('sub_controller',$this->sub_controller);
         $this->view->assign('online',(bool)$online);
-        //$this->view->assign('user',$user);
+        $this->view->assign('user',$user);
         $this->view->assign('menu',new Menu);
     }
     
     public function getSubController(){
+        $sub_controller = false;
+        switch ($this->router->getFolder(0)){
+            case 'ingridiants':
+                $sub_controller = new IngridiantsController($this->router,$this->view);
+            break;
+        }
         
+        if ($sub_controller instanceof AbstractSubController){
+            $sub_controller->execute();
+            $this->sub_controller = $sub_controller;
+            array_unshift($this->titles,$sub_controller->getTitle());
+            $this->desc = $sub_controller->getDescription();
+        }
     }
     
     public function setCSS(){}
