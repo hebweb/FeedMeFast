@@ -132,4 +132,23 @@ class IngridiantsModelGetTest extends MatkonTestCase{
         $this->model->execute();
         $this->assertTrue($this->model->isError(IngridiantsError::INVALID_RECIPE_ID));
     }
+    
+    public function testList(){
+        $options = array('action'=>IngridiantsAction::LIST_ALL);
+        
+        $this->setUpModel($options);
+        
+        $this->model->execute();
+        
+        $ings = $this->model->getIngridiants();
+        
+        $this->assertEquals(3,count($ings));
+        
+        $ids = array('1','2','3');
+        $names = array('milk','sugar','salt');
+        for ($i=0;$i<3;$i++){
+            $this->assertEquals($ids[$i],$ings[$ids[$i]]['id']);
+            $this->assertEquals($names[$i],$ings[$ids[$i]]['name']);
+        }
+    }
 }

@@ -16,9 +16,11 @@ class IngridiantsAction{
     const BY_NAME = 1;
     const BY_ID = 2;
     const BY_RECIPE = 3;
-    const CREATE_SINGLE = 4;
-    const CREATE_MULTIPLE = 5;
-    const ADD_MANUFACTORS = 6;
+    const LIST_ALL = 4;
+    
+    const CREATE_SINGLE = 5;
+    const CREATE_MULTIPLE = 6;
+    const ADD_MANUFACTORS = 7;
 }
 
 class IngridiantsModel extends AbstractModel{
@@ -32,6 +34,7 @@ class IngridiantsModel extends AbstractModel{
         , IngridiantsAction::CREATE_SINGLE => 'createIngridiant'
         , IngridiantsAction::CREATE_MULTIPLE => 'createIngridiants'
         , IngridiantsAction::ADD_MANUFACTORS => 'addManufactor'
+        , IngridiantsAction::LIST_ALL => 'listAll'
     );
     
     /**
@@ -100,6 +103,33 @@ class IngridiantsModel extends AbstractModel{
         $ingridiants = array();
         $last_id = false;
         foreach($this->db->queryArray($sql,array($rec_id)) as $raw){
+            if ($last_id!=$raw['id']){
+                $last_id = $raw['id'];
+                $ingridiants[$last_id]=$this->orgenizeIngridiantData($raw);
+                $ingridiants[$last_id]['manufactors'] = array();
+            }
+            
+            if ($raw['manu_id']) $ingridiants[$last_id]['manufactors'][]=$this->orgenizeManufactorData($raw);
+        }
+        
+        $this->_ingridiants = $ingridiants;
+    }
+    
+    protected function listAll(){
+        $sql = "SELECT
+                    ingridiants.id,
+                    ingridiants.name,
+                    ingridiant_details.*,
+                    ingridiant_manufactors.name as `manu_name`,
+                    ingridiant_manufactors.id as `manu_id`
+                FROM
+                ingridiants
+                Left Join ingridiant_manufactors ON ingridiant_manufactors.ing_id = ingridiants.id
+                Left Join ingridiant_details ON ingridiant_details.id = ingridiants.id";
+        
+        $ingridiants = array();
+        $last_id = false;
+        foreach($this->db->queryArray($sql) as $raw){
             if ($last_id!=$raw['id']){
                 $last_id = $raw['id'];
                 $ingridiants[$last_id]=$this->orgenizeIngridiantData($raw);
