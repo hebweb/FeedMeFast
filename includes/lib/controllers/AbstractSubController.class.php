@@ -1,9 +1,9 @@
 <?php
 abstract class AbstractSubController{
     
-    abstract protected $actions;
+    protected $actions;
     
-    abstract protected $default_action;
+    protected $default_action;
     
     protected $model;
     
@@ -21,15 +21,17 @@ abstract class AbstractSubController{
         $this->user   = new User;
         $this->env    = $env;
         
-        if (!in_array($router->getFolder(1),$this->actions)) $this->action = $this->actions[$this->default_action];
+        if (!in_array($router->getFolder(1),$this->actions)) $this->action = $this->default_action;
+        else $this->action = $this->$router->getFolder(1);
      }
      
-     public public function execute(){
-        $this->{$this->action};
+     public function execute(){
+         $action = $this->actions[$this->action];
+         $this->{$action}();
      }
      
      protected function fetchTemplate($name){
-         $file = dirname(__FILE__) . '/../templates/' . $this->folder . '/' . $this->enc . "/$name.tpl.php";
+         $file = dirname(__FILE__) . '/../templates/' . $this->folder . '/' . $this->env . "/$name.tpl.php";
          if (file_exists($file)){
              return $this->view->fetch($this->folder . "/{$this->env}/$name.tpl.php");
          }else return $this->view->fetch($this->folder . "/xhtml/$name.tpl.php");

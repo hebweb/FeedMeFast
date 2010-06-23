@@ -18,7 +18,7 @@ class User{
     }
     
     public function setId($id){
-        $_SESSION[self::SESSION_NAME] = self::$info = self::$db->queryArray("SELECT * FROM `users` WHERE `id`=?",array($id));
+        $_SESSION[self::SESSION_NAME] = self::$info = self::$db->queryRow("SELECT * FROM `users` WHERE `id`=?",array($id));
         $this->getPermissions();
     }
     
