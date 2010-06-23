@@ -41,12 +41,11 @@ class Router {
 	
 	private function correctInput(&$arr){
 		$gpc = get_magic_quotes_gpc();
-		foreach ($arr as &$var){
+		foreach ($arr as $key=>&$var){
 			if (is_array($var)) $this->correctInput($var);
 			elseif (is_string($var)){
 				if ($gpc) stripslashes($var);
 				$var = urldecode($var);
-				$var = htmlentities($var);
 			}
 		}
 	}
@@ -65,6 +64,10 @@ class Router {
 	public function __set($name,$value=''){
 		if (is_string($name)) self::$_params[$name] = $value;
 		else throw new TFRouteException('Bad Paramater Name');
+	}
+	
+	public function isParamSet($name){
+	    return (array_key_exists($name,self::$_params) || array_key_exists($name,$_POST) || array_key_exists($name,$_GET));
 	}
 	
 	public function getFolder($num){

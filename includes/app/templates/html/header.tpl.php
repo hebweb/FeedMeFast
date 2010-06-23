@@ -35,7 +35,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         img, div { behavior: url(<?php echo $this->base_path?>css/iepngfix.htc) }
         </style>
     <![endif]-->
-        
+    <base href="<?php echo $this->base_path;?>" />
 </head>
 <body>
 <!--[if IE 6]>

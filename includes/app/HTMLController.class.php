@@ -52,6 +52,8 @@ class HTMLController{
             $this->sub_controller = $sub_controller;
             array_unshift($this->titles,$sub_controller->getTitle());
             $this->desc = $sub_controller->getDescription();
+            foreach ($sub_controller->getCSS() as $css) $this->css[]=$css;
+            foreach ($sub_controller->getJS() as $js) $this->js[]=$js;
         }
     }
     

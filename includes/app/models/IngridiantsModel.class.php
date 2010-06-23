@@ -153,6 +153,7 @@ class IngridiantsModel extends AbstractModel{
         else $cold = 1;
         
         $manufactors = $this->isOptionSet('manufactors') ? $this->getOption('manufactors') : false;
+       
         if (!$name) $this->setError(IngridiantsError::NO_NAME);
         if ($this->doesIngridiantExists($name)) $this->setError(IngridiantsError::NAME_EXISTS);
         

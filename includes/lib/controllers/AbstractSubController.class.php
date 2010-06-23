@@ -1,6 +1,10 @@
 <?php
 abstract class AbstractSubController{
     
+    protected $css = array();
+    
+    protected $js = array();
+    
     protected $actions;
     
     protected $default_action;
@@ -22,7 +26,7 @@ abstract class AbstractSubController{
         $this->env    = $env;
         
         if (!in_array($router->getFolder(1),$this->actions)) $this->action = $this->default_action;
-        else $this->action = $this->$router->getFolder(1);
+        else $this->action = $this->router->getFolder(1);
      }
      
      public function execute(){
@@ -42,4 +46,7 @@ abstract class AbstractSubController{
      abstract public function getDescription();
      
      abstract public function generate();
+     
+     public function getCSS(){return $this->css;}
+     public function getJS(){return $this->js;}
 }
